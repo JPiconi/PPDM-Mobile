@@ -7,7 +7,6 @@ export const styles = StyleSheet.create({
     backgroundColor: '#442d1c', //cor COWHIDE COCOA
     justifyContent: 'center', //tudo ao centro
     alignItems: 'center', //itens ao centro
-
   },
   titulo: {
     fontSize: 24, //tamanho da letra em 24px
