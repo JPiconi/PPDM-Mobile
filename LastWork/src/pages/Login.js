@@ -49,11 +49,12 @@ export default function Login({ navigation }) {
         />
         <View style={styles.button1}>
           <TouchableOpacity style={styles.button} onPress={login}>
-
-            <Text style={styles.buttonText}>Entrar <AntDesign name="login" size={20} color="#e2d2b8" /></Text>
+            <Text style={styles.buttonText}>
+              Entrar
+              <AntDesign name="login" size={20} color="#e2d2b8" />
+            </Text>
           </TouchableOpacity>
         </View>
-
       </View>
     </ImageBackground>
   );

@@ -1,30 +1,4 @@
-import { Text, View, TouchableOpacity, ImageBackground } from "react-native";
-import { styles } from "./src/styles/styles";
-import TouchComponents from "./src/components/Buttons/TouchComponents";
-
-// import { First, ComponentTesting } from "./src/components/SecondComponent";
-// import ComponentsExportados from "./src/components/SecondComponent";
-export default function App() {
-  const saveBtn = () => {
-    alert("Você salvou algo ao apertar este Botão!!");
-  };
-  const cancelBtn = () => {
-    alert("Você cancelou algo ao apertar este Botão!!");
-  };
-  return (
-    <ImageBackground
-      style={styles.container}
-      source={require("./srcc/assets/images/raposa.jpg")}
-      resizeMode="cover"
-    >
-      <View style={styles.container}>
-        {/* <Text style={styles.text}>Oh Wow bro</Text> */}
-        <TouchComponents funcClickBtn={saveBtn} text="Salvar" />
-        <TouchComponents funcClickBtn={cancelBtn} text="Cancelar" />
-      </View>
-    </ImageBackground>
-  );
-}
+--
 
 const express = require('express');
 const app = express();
