@@ -12,13 +12,13 @@ export default function OnboardingScreen() {
   const navigation = useNavigation()
 
   const handleDone = () => {
-    navigation.navigate("Home")
+    navigation.navigate("Login")
     setItem('onboarded', '1')
   }
   const doneButton = ({ ...props }) => {
     return (
       <TouchableOpacity style={styles.doneButton} {...props}>
-        <Text style={styles.text}>Done</Text>
+        <Text style={styles.text}>Login</Text>
       </TouchableOpacity>
     )
   }
@@ -31,7 +31,7 @@ export default function OnboardingScreen() {
         DoneButtonComponent={doneButton}
         containerStyles={{ paddingHorizontal: 15 }}
         pages={[{
-          backgroundColor: '#2a2e2f',
+          backgroundColor: '#000',
           image: (
             <View style={styles.lottie}>
               <LottieView source={require("../assets/images/Popcorn.json")}
@@ -42,20 +42,57 @@ export default function OnboardingScreen() {
             </View>
           ),
           title: "Welcome!",
-          subtitle: "Discover Movies you like.",
-          subtitle: "Get your popcorn and Enjoy!!."
         },
+        {
+          backgroundColor: '#000',
+          image: (
+            <View style={styles.lottie}>
+              <LottieView source={require("../assets/images/Video  Movie.json")}
+                autoPlay
+                loop
+                style={{ width: '100%', height: '100%' }}
+              />
+            </View>
+          ),
+          title: "Discover Movies of your interest!."
+        },
+        {
+          backgroundColor: '#000',
+          image: (
+            <View style={styles.lottie}>
+              <LottieView source={require("../assets/images/Ticket.json")}
+                autoPlay
+                loop
+                style={{ width: '100%', height: '100%' }}
+              />
+            </View>
+          ),
+          title: "Take your best company."
+        },
+        {
+          backgroundColor: '#000',
+          image: (
+            <View style={styles.lottie}>
+              <LottieView source={require("../assets/images/Movie3.json")}
+                autoPlay
+                loop
+                style={{ width: '100%', height: '100%' }}
+              />
+            </View>
+          ),
+          title: "And Enjoy!!"
+        }
         ]}
       />
-      < StatusBar style="auto" />
-    </View >
+      <StatusBar style="auto" />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#000',
   },
   lottie: {
     width: width * 0.9,
@@ -64,11 +101,9 @@ const styles = StyleSheet.create({
   doneButton: {
     padding: 20,
     backgroundColor: "#484848",
-    borderTopLeftRadius: "100%",
-    borderBottomLeftRadius: "100%",
+    borderRadius: "100%"
   },
   text: {
     color: '#fff'
   }
-
 });

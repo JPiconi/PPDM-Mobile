@@ -4,12 +4,16 @@ import { useState, useEffect } from "react";
 
 //Import Screens
 import OnboardingScreen from "../pages/Onboarding";
+import Home from "../pages/Home";
+import Login from "../pages/Login";
+import Filmes from "../pages/Filmes";
 
 import { getItem } from "../components/AsyncStorage";
 
 const Stack = createNativeStackNavigator();
 
 export default function AppNavigation() {
+
   const [showOnboarding, setShowOnboarding] = useState(null)
 
   useEffect(() => {
@@ -17,11 +21,10 @@ export default function AppNavigation() {
   }, [])
 
   const checkIfAlreadyOnboarded = async () => {
-    let onboarded = await getItem('onboarded')
+    let onboarded = await getItem('login')
 
-    //onboarded == 1
-    //onboarded === 1
-    if (onboarded === "1") {
+    console.log(onboarded)
+    if (onboarded === "logado") {
       setShowOnboarding(false)
     } else {
       setShowOnboarding(true)
@@ -35,9 +38,11 @@ export default function AppNavigation() {
   if (showOnboarding) {
     return (
       <NavigationContainer>
-        <Stack.Navigator initialRouteName="Onboarding">
+        <Stack.Navigator initialRouteName="Login">
           <Stack.Screen name="Onboarding" component={OnboardingScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
+          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+          <Stack.Screen name="Filmes" component={Filmes} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     )
@@ -45,8 +50,10 @@ export default function AppNavigation() {
     return (
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Home">
-          <Stack.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Home" component={Home} options={{ headerShown: false }} />
           <Stack.Screen name="Onboarding" component={OnboardingScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="Login" component={Login} options={{ headerShown: false }} />
+          <Stack.Screen name="Filmes" component={Filmes} options={{ headerShown: false }} />
         </Stack.Navigator>
       </NavigationContainer>
     )

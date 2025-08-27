@@ -1,62 +1,107 @@
-import React, { useState } from 'react';
-import { View, Text, TextInput, Button, StyleSheet, Alert } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import React from 'react';
+import { View, Text, TextInput, TouchableOpacity, ImageBackground, Pressable, StyleSheet, Dimensions } from 'react-native';
+import { useState } from 'react';
 
-export default function Login({ navigation, setLogado }) {
-  const [usuario, setUsuario] = useState('');
+import { useNavigation } from '@react-navigation/native';
+import { setItem } from '../components/AsyncStorage';
+
+
+const { width, height } = Dimensions.get('window')
+export default function Login() {
+  const navigation = useNavigation();
+
+  const [email, setEmail] = useState('');
   const [senha, setSenha] = useState('');
 
-  const handleLogin = async () => {
-    if (usuario && senha) {
-      try {
-        await AsyncStorage.setItem('logado', 'true');
-        setLogado(true);
-      } catch (e) {
-        Alert.alert('Erro', 'Falha ao salvar sessão');
-      }
-    } else {
-      Alert.alert('Atenção', 'Preencha usuário e senha');
+  const Bora = async () => {
+    if (email.trim() === '' || senha.trim() === '') {
+      alert('Atenção, Preencha todos os campos para continuar!');
+      return;
     }
+    await setItem("login", "logado")
+    navigation.navigate("Home");
   };
 
   return (
-    <View style={styles.container}>
-      <Text style={styles.title}>CineGallery</Text>
-      <TextInput
-        placeholder="Usuário"
-        value={usuario}
-        onChangeText={setUsuario}
-        style={styles.input}
-      />
-      <TextInput
-        placeholder="Senha"
-        value={senha}
-        onChangeText={setSenha}
-        secureTextEntry
-        style={styles.input}
-      />
-      <Button title="Entrar" onPress={handleLogin} />
-    </View>
+    <ImageBackground style={styles.container}
+      source={require("../assets/images/download.png")}
+      resizeMode="cover"
+      blurRadius={8}>
+      <View>
+        <Text style={{
+          fontSize: 35,
+          marginBottom: 20,
+          alignSelf: 'center',
+          color: '#e5dac9',
+        }}>Sign In!</Text>
+
+        <TextInput
+          placeholder="E-mail"
+          placeholderTextColor='#000'
+          style={styles.input}
+          keyboardType='email-address'
+          autoCapitalize="none"
+          value={email}
+          onChangeText={setEmail}
+
+        />
+
+        <TextInput
+          placeholder="Senha"
+          placeholderTextColor='#000'
+          style={styles.input}
+          secureTextEntry={true}
+          value={senha}
+          onChangeText={setSenha}
+        />
+
+        <TouchableOpacity style={styles.Button} onPress={Bora} >
+          <Text style={styles.text}>Sign In !</Text>
+        </TouchableOpacity>
+      </View>
+    </ImageBackground >
   );
 }
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#303030',
     justifyContent: 'center',
     alignItems: 'center',
-    padding: 20
-  },
-  title: {
-    fontSize: 32,
-    marginBottom: 20
   },
   input: {
-    width: '100%',
-    borderWidth: 1,
-    borderColor: '#ccc',
-    borderRadius: 5,
-    marginBottom: 10,
-    padding: 10
-  }
+    height: 50,
+    color: 'Black',
+    backgroundColor: '#c9c8c7',
+    borderRadius: 30,
+    width: 250,
+    paddingHorizontal: 15,
+    marginBottom: 15,
+    fontSize: 17,
+    borderColor: '#555500',
+    borderWidth: 2,
+  },
+  Button: {
+    backgroundColor: '#e5dac9',
+    paddingVertical: 10,
+    paddingHorizontal: 30,
+    borderRadius: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    elevation: 5,
+  },
+  text: {
+    fontSize: 20,
+    alignSelf: 'center'
+  },
+
+  lottie: {
+    width: width * 0.9,
+    height: width,
+    marginbottom: 200
+  },
 });
+
+
+

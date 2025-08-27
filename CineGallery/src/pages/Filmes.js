@@ -1,56 +1,144 @@
-import React, { useEffect, useState } from 'react';
-import { View, Text, FlatList, Image, ActivityIndicator, StyleSheet, Alert, Dimensions } from 'react-native';
+import { StatusBar } from 'expo-status-bar';
+import { StyleSheet, Text, View, Image, Dimensions, FlatList } from 'react-native';
+import React, { useState, useEffect } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+//import reanimated
+import Animated, {
+  useSharedValue,
+  useAnimatedStyle,
+  useAnimatedScrollHandler,
+  interpolate
+} from 'react-native-reanimated';
+
+//import axios
 import axios from 'axios';
 
-const API_KEY = 'SUA_API_KEY_TMDB'; // Substitua pela sua chave TMDB
+const Stack = createNativeStackNavigator();
 
-export default function GalleryScreen() {
-  const [filmes, setFilmes] = useState([]);
-  const [loading, setLoading] = useState(true);
+const { width } = Dimensions.get("screen");
+const imageWidth = width * 0.7;
+const imageHeight = imageWidth * 1.76;
+const spacing = 20;
+
+function Photo({ item, index, scrollX }) {
+  const stylez = useAnimatedStyle(() => {
+    return {
+      transform: [
+        {
+          scale: interpolate(scrollX.value, [index - 1, index, index + 1], [1.6, 1, 1.6])
+        },
+        {
+          rotate: `${interpolate(scrollX.value, [index - 1, index, index + 1], [15, 1, -15])}deg`
+        }
+      ]
+    }
+  });
+  return (
+    <View style={{
+      width: imageWidth,
+      height: imageHeight,
+      overflow: 'hidden',
+      borderRadius: 0
+    }}>
+      <Animated.Image source={{ uri: item }} style={[{ flex: 1 }, stylez]} />
+    </View>
+  )
+}
+
+function BackdropPoster({ poster, index, scrollX }) {
+  const stylez = useAnimatedStyle(() => {
+    return {
+      opacity: interpolate(scrollX.value, [index - 1, index, index + 1], [0, 1, 0])
+    }
+  });
+  return (
+    <Animated.Image source={{ uri: poster }}
+      style={[StyleSheet.absoluteFillObject, stylez]}
+      blurRadius={10} />
+  )
+}
+
+export default function Filmes() {
+  const [data, setData] = useState([]);
+
+  //useSharedValue => Reativo as animações, quando o nosso scrollX.value for alterado
+  // todas as animações serão alteradas.
+  const scrollX = useSharedValue(0)
+
+  // useAnimatedScrollHandler => Hook do reanimated, que serve para escutar o evento de
+  // rolagem (onScroll) da nossa lista
+  const onScroll = useAnimatedScrollHandler((e) => {
+    //e.contentOffset.x => Distancia em pixels que a lista ja foi rolada na horizontal
+    //scrollX.value = 320 / (300 + 20)
+    //scrollX.value = 0
+    //scrollX.value = 1
+    //scrollX.value = 2
+    scrollX.value = e.contentOffset.x / (imageWidth + spacing);
+  })
 
   useEffect(() => {
-    const fetchMovies = async () => {
-      try {
-        const res = await axios.get(`https://api.themoviedb.org/3/movie/popular?api_key=${API_KEY}&language=pt-BR&page=1`);
-        setFilmes(res.data.results.slice(0, 10));
-      } catch (e) {
-        Alert.alert('Erro', 'Falha ao carregar filmes.');
-      } finally {
-        setLoading(false);
-      }
-    };
-    fetchMovies();
-  }, []);
+    fetchData();
+  }, [])
 
-  if (loading) return <ActivityIndicator size="large" style={{ flex: 1 }} />;
+  const fetchData = async () => {
+    try {
+      const res = await axios.get(
+        `http://www.omdbapi.com/?s=movie&page=1&apikey=b28393be`,
+      );
+      const moviePosters = res.data.Search.map(movie => movie.Poster)
+      console.log(moviePosters)
+      setData(moviePosters);
+    } catch (error) {
+      console.log("Erro ao buscar as imagens: ", error)
+    }
+
+  }
+
+
 
   return (
     <View style={styles.container}>
-      <FlatList
-        data={filmes}
-        keyExtractor={item => item.id.toString()}
-        numColumns={2}
-        renderItem={({ item }) => (
-          <View style={styles.card}>
-            <Image
-              source={{ uri: `https://image.tmdb.org/t/p/w500${item.poster_path}` }}
-              style={styles.poster}
-              resizeMode="cover"
-            />
-            <Text style={styles.title} numberOfLines={2}>{item.title}</Text>
-          </View>
-        )}
+      {/* position: absolute, bottom: 0, top: 0, left: 0, right: 0*/}
+      <View style={StyleSheet.absoluteFillObject}>
+        {data.map((poster, index) => (
+          <BackdropPoster key={index} poster={poster} index={index} scrollX={scrollX} />
+        ))}
+      </View>
+      <Animated.FlatList
+        data={data}
+        keyExtractor={(index) => String(index)}
+        horizontal
+        style={{ flexGrow: 0 }}
+        snapToInterval={imageWidth + spacing}
+        //snapToInterval => faz com que a rolagem pare extamente a cada intervalo especificado
+        // nesse caso, o tamanho da imagem, mais o gap (spacing)
+        decelerationRate={'fast'}
+        //decelerationRate => Controla a velocidade da desaceleração da nossa rolagem
+        contentContainerStyle={{
+          gap: spacing,
+          paddingHorizontal: (width - imageWidth) / 2,
+          // backgroundColor: '#b0d2ec',
+          // alignItems: "center"
+        }}
+        //contentContainerStyle => Aplicar estilo no conteúdo interno do nosso FlatList
+        renderItem={({ item, index }) => <Photo item={item} index={index} scrollX={scrollX} />}
+        onScroll={onScroll}
+        // onScroll => Função chamada enquanto 'rolamos' nossa lista
+        scrollEventThrottle={16}
+        //scrollEventThrottle => Define a frequência que o evento onScroll é chamado (60Fps)
+        showsHorizontalScrollIndicator={false}
+      // showsHorizontalScrollIndicator => Oculta a 'barrinha' horizontal da nossa "rolagem"
       />
     </View>
   );
 }
 
-const { width } = Dimensions.get('window');
-const posterWidth = (width / 2) - 30;
-
 const styles = StyleSheet.create({
-  container: { flex: 1, padding: 10, backgroundColor: '#fff' },
-  card: { flex: 1, margin: 10, alignItems: 'center' },
-  poster: { width: posterWidth, height: posterWidth * 1.5, borderRadius: 10 },
-  title: { marginTop: 8, fontWeight: 'bold', textAlign: 'center' }
+  container: {
+    flex: 1,
+    backgroundColor: '#fff',
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
 });
