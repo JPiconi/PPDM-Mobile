@@ -15,7 +15,7 @@ export default function Home() {
   }
   const handleReset = async () => {
     await removeItem('login')
-    navigation.push("Login")
+    navigation.navigate("Onboarding")
   }
 
   return (

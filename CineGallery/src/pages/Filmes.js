@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
     backgroundColor: '#fff',
     alignItems: 'center',
     justifyContent: 'center',
+    gap: 10
   },
   Button: {
     backgroundColor: '#e5dac9',
