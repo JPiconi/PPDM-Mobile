@@ -1,7 +1,9 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View, Image, Dimensions, FlatList } from 'react-native';
+import { StyleSheet, Text, View, Image, Dimensions, FlatList, TouchableOpacity } from 'react-native';
 import React, { useState, useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
+import { useNavigation } from '@react-navigation/native';
 
 //import reanimated
 import Animated, {
@@ -21,7 +23,7 @@ const imageWidth = width * 0.7;
 const imageHeight = imageWidth * 1.76;
 const spacing = 20;
 
-function Photo({ item, index, scrollX }) {
+function Posters({ item, index, scrollX }) {
   const stylez = useAnimatedStyle(() => {
     return {
       transform: [
@@ -60,6 +62,8 @@ function BackdropPoster({ poster, index, scrollX }) {
 }
 
 export default function Filmes() {
+
+  const navigation = useNavigation();
   const [data, setData] = useState([]);
 
   //useSharedValue => Reativo as animações, quando o nosso scrollX.value for alterado
@@ -95,8 +99,9 @@ export default function Filmes() {
 
   }
 
-
-
+  const Return = () => {
+    navigation.navigate("Home");
+  }
   return (
     <View style={styles.container}>
       {/* position: absolute, bottom: 0, top: 0, left: 0, right: 0*/}
@@ -122,7 +127,7 @@ export default function Filmes() {
           // alignItems: "center"
         }}
         //contentContainerStyle => Aplicar estilo no conteúdo interno do nosso FlatList
-        renderItem={({ item, index }) => <Photo item={item} index={index} scrollX={scrollX} />}
+        renderItem={({ item, index }) => <Posters item={item} index={index} scrollX={scrollX} />}
         onScroll={onScroll}
         // onScroll => Função chamada enquanto 'rolamos' nossa lista
         scrollEventThrottle={16}
@@ -130,6 +135,10 @@ export default function Filmes() {
         showsHorizontalScrollIndicator={false}
       // showsHorizontalScrollIndicator => Oculta a 'barrinha' horizontal da nossa "rolagem"
       />
+
+      <TouchableOpacity style={styles.Button} onPress={Return}>
+        <Text>Voltar</Text>
+      </TouchableOpacity>
     </View>
   );
 }
@@ -141,4 +150,13 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
+  Button: {
+    backgroundColor: '#e5dac9',
+    paddingVertical: 8,
+    paddingHorizontal: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    shadowColor: '#000',
+    elevation: 5,
+  }
 });
