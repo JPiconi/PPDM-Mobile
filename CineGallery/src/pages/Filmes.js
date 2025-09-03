@@ -16,7 +16,7 @@ import Animated, {
 //import axios
 import axios from 'axios';
 
-const Stack = createNativeStackNavigator();
+// const Stack = createNativeStackNavigator();
 
 const { width } = Dimensions.get("screen");
 const imageWidth = width * 0.7;
